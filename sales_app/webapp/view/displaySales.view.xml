@@ -1,0 +1,67 @@
+<mvc:View controllerName="salesapp.controller.displaySales"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m"
+    xmlns:smartList="sap.ui.comp.smartlist"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+    xmlns:f="sap.ui.layout.form"
+    >
+
+    <Page id="page" title="{i18n>title}">
+        <SplitContainer id="splitContainer">
+      <masterPages>
+        <Page id="masterPage">
+            <smartFilterBar:SmartFilterBar id="smartFilterBar" entitySet="ZTD_HEADSALES" enableBasicSearch="true">
+                <smartFilterBar:controlConfiguration>
+                            <smartFilterBar:ControlConfiguration id="salesOrderFilter" key="SalesOrder" label="Sales order" visibleInAdvancedArea="true">
+                            </smartFilterBar:ControlConfiguration>
+                            <smartFilterBar:ControlConfiguration id="salesOrderTypeFilter" key="SalesOrderType" label="Order type" visibleInAdvancedArea="true">
+                            </smartFilterBar:ControlConfiguration>
+                        </smartFilterBar:controlConfiguration>
+                    </smartFilterBar:SmartFilterBar>
+			<smartList:SmartList id="smartList" entitySet="ZTD_HEADSALES" header="Sales List" smartFilter="smartFilterBar"
+				showRowCount="true" showFullScreenButton="true" enableAutoBinding="true"
+				selectFields="SalesOrder,SalesOrderType">
+				<smartList:listItemTemplate>
+					<StandardListItem id="listItem" title="{SalesOrder}" info="{SalesOrderType}" press="onSalesHeaderClick" type="Active" />
+				</smartList:listItemTemplate>
+			</smartList:SmartList>
+        </Page>
+      </masterPages>
+      <detailPages>
+        <Page id="detailPage">
+            <Panel id="productDetailsPanel" headerText="Order details" class="sapUiResponsiveMargin" width="auto">
+                <Bar id="Bar">
+                    <contentLeft>
+                      <Button id="salesHeaderChange" text="Change" press="onChangeHeader"></Button>
+                      <Button id="salesHeaderSave" text="Save" press="onSaveHeader"></Button>
+                    </contentLeft>
+                  </Bar>
+            <f:SimpleForm id="simpleForm" editable="false" layout="ColumnLayout">
+                <Label id="OrderField" text="Sales order"/>
+                <Input id="OrderFieldInput" value="{SalesOrder}" editable="false"/>  
+                <Label id="OrderTypeField" text="Order type"/>
+                <Input id="OrderTypeFieldInput" value="{SalesOrderType}" editable="false"/>  
+                <Label id="TotalNetAmountField" text="Net amount"/>
+                <Input id="TotalNetAmountInput" value="{TotalNetAmount}" editable="false"/> 
+                <Label id="CurrencyCodeField" text="Currency"/>
+                <Input id="CurrencyCodeInput" value="{TransactionCurrency}" editable="false"/> 
+                <Label id="SalesOfficeField" text="Sales office"/>
+                <Input id="SalesOfficeInput" value="{SalesOffice}" editable="false"/> 
+                <Label id="PurchaseOrderByCustomerField" text="Customer reference"/>
+                <Input id="PurchaseOrderByCustomerInput" value="{PurchaseOrderByCustomer}" editable="{changeHeaderStateModel>/editable}" change="onChangedHeader"/> 
+            </f:SimpleForm>
+          </Panel>
+          <Panel id="salesItems" headerText="Sales items" class="sapUiResponsiveMargin" width="auto">
+            <smartTable:SmartTable id="smartTable" entitySet="ZTD_ITEMSSALES"  
+            tableType="ResponsiveTable" header="Order items" showRowCount="true"
+            enableAutoBinding="false" class="sapUiResponsiveContentPadding" enableAutoColumnWidth="true" editTogglable="false" 
+            initiallyVisibleFields="SalesOrder,SalesOrderItem">
+            <Table id="table" selectionChange="onSalesItemPress" mode="SingleSelectMaster"/>
+        </smartTable:SmartTable>
+          </Panel>
+          </Page>
+      </detailPages>
+        </SplitContainer>
+    </Page>
+</mvc:View>
