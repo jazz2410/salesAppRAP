@@ -63,14 +63,21 @@ sap.ui.define([
                 };
                 var oModel = this.getView().getModel();
                 oModel.update(sPath,Data,{
-                    success: function(){
+                    success: function(oData, oResponse)
+                    {
+      
+                        var message = oResponse.headers['sap-message'];
+                        var message_obj = JSON.parse(message);
+                        console.log(message_obj);
+
                         MessageToast.show("Data was changed!");
                         var changeHeaderStateModel = this.getView().getModel('changeHeaderStateModel');
                         changeHeaderStateModel.setProperty('/editable', false);
                         var changeHeaderValuesModel =  this.getView().getModel('changeHeaderValuesModel');
                         changeHeaderValuesModel.setProperty('/PurchaseOrderByCustomer',undefined);
                     }.bind(this),
-                    error: function(){
+                    error: function(error){
+                        console.log(error);
                         console.log("Error in backend!");
                     }
                 });
