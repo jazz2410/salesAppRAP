@@ -69,8 +69,10 @@ sap.ui.define([
                         var message = oResponse.headers['sap-message'];
                         var message_obj = JSON.parse(message);
                         console.log(message_obj);
-
                         MessageToast.show("Data was changed!");
+                        this.getView().getModel().refresh(true);
+
+
                         var changeHeaderStateModel = this.getView().getModel('changeHeaderStateModel');
                         changeHeaderStateModel.setProperty('/editable', false);
                         var changeHeaderValuesModel =  this.getView().getModel('changeHeaderValuesModel');
@@ -78,7 +80,7 @@ sap.ui.define([
                     }.bind(this),
                     error: function(error){
                         console.log(error);
-                        console.log("Error in backend!");
+                        MessageToast.show("Error in backend system!");
                     }
                 });
             },
