@@ -1,0 +1,50 @@
+<core:FragmentDefinition
+    id="JSONFragment"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+>
+    <Dialog
+        id="deliveryDialog"
+        title="Deliveries"
+        contentHeight="50%"
+        contentWidth="75%"
+    >
+        <customHeader>
+            <Bar id="Header">
+                <contentLeft>
+                    <Button
+                        id="deliveryClose"
+                        text="Close"
+                        press="closeDelivery"
+                    />
+                </contentLeft>
+                <contentMiddle>
+                    <Title
+                        id="deliveryDetails"
+                        text="Delivery items"
+                    />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+
+        <smartTable:SmartTable
+            id="deliverySmartTable"
+            entitySet="ZTD_DELIVERIES"
+            tableType="ResponsiveTable"
+            header="Delivery items"
+            showRowCount="true"
+            enableAutoBinding="true"
+            class="sapUiResponsiveContentPadding"
+            enableAutoColumnWidth="true"
+            editTogglable="false"
+            initiallyVisibleFields="DeliveryDocument,DeliveryDocumentItem,Product,ActualDeliveryQuantity,BaseUnit"
+        >
+            <Table
+                id="deliveryTable"
+                selectionChange="onRowSelect"
+                mode="SingleSelectMaster"
+            />
+        </smartTable:SmartTable>
+    </Dialog>
+</core:FragmentDefinition>

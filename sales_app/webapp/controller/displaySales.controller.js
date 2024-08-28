@@ -129,6 +129,26 @@ sap.ui.define([
                 changeHeaderStateModel.setProperty('/editable', false);
                 var changeHeaderValuesModel = this.getView().getModel('changeHeaderValuesModel');
                 changeHeaderValuesModel.setProperty('/PurchaseOrderByCustomer', undefined);
+            },
+            onDeliveryShow: function(){
+                   var item = this.byId('table').getSelectedItems()[0];
+
+                    if(!item){
+                        MessageToast.show("Select a sales order item");
+                    }
+                    var sPath = item.getBindingContext().getPath();
+                    var itemsPath = sPath + '/to_Deliveries';
+                    console.log(itemsPath);
+                    if(!this._oDialog){
+                        this._oDialog = sap.ui.xmlfragment(this.getView().getId(),"salesapp.view.deliveries", this);
+                        this.getView().addDependent(this._oDialog);
+                    }
+                    this.getView().byId('deliverySmartTable').setTableBindingPath(itemsPath);
+                    this.getView().byId("deliverySmartTable").rebindTable(true);
+                    this._oDialog.open();
+            },
+            closeDelivery: function(){
+                this._oDialog.close();
             }
         });
     });
