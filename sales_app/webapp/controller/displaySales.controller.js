@@ -22,6 +22,14 @@ sap.ui.define([
                 this.getView().setModel(changeHeaderStateModel, 'changeHeaderStateModel');
                 this.getView().setModel(changeHeaderValuesModel, 'changeHeaderValuesModel');
 
+                var createDeliveryValues = {
+                    ShippingPoint : undefined,
+                    Quantity : undefined,
+                }
+
+                var createDeliveryValuesModel = new JSONModel(createDeliveryValues);
+                this.getView().setModel(createDeliveryValuesModel,'createDeliveryValuesModel');
+
             },
             onSalesHeaderClick: function (oEvent) {
                 const sPath = oEvent.getSource().getBindingContext().getPath(); //returns /ZTD_HEADSALES('XXXXXX')
@@ -42,6 +50,16 @@ sap.ui.define([
                 var newPurchaseOrderByCustomer = event.getParameter('newValue');
                 changeHeaderValuesModel.setProperty('/PurchaseOrderByCustomer', newPurchaseOrderByCustomer);
 
+            },
+            onChangeShippingPoint: function(event){
+                var createDeliveryValuesModel = this.getView().getModel('createDeliveryValuesModel');
+                var newShippingPoint = event.getParameter('newValue');
+                createDeliveryValuesModel.setProperty('/ShippingPoint', newShippingPoint);
+            },
+            onChangeQuantity: function(event){
+                var createDeliveryValuesModel = this.getView().getModel('createDeliveryValuesModel');
+                var newQuantity = event.getParameter('newValue');
+                createDeliveryValuesModel.setProperty('/Quantity', newQuantity);
             },
             onSaveHeader: function () {
                 var panel = this.byId("productDetailsPanel");
@@ -166,6 +184,43 @@ sap.ui.define([
                 }
                 this.getView().byId('deliveryCreateForm').bindElement(sPath);
                 this._oDialog.open();
+
+            },
+            onPressDeliveryCreate: function(){
+                var createDeliveryValuesModel = this.getView().getModel('createDeliveryValuesModel');
+                var newShippingPoint = createDeliveryValuesModel.getProperty('/ShippingPoint');
+                var newQuantity = createDeliveryValuesModel.getProperty('/Quantity');
+
+                var sPath = '/ZTD_DELIVERIES';
+                var data = {
+                    ShippingPoint : newShippingPoint,
+                    ActualDeliveryQuantity : newQuantity,
+                }
+                var oModel = this.getView().getModel();
+
+                oModel.create(sPath,data,{
+                    success: function(oData,oResponse){
+                        console.log(oData);
+                        console.log(oResponse);
+
+                        var message = oResponse.headers['sap-message'];
+                        var message_obj = JSON.parse(message);
+                        if(message_obj.details.length != 0){
+                            var content = message_obj.details.map(function(element){
+                                return new sap.m.StandardListItem({
+                                    title : element.message,
+                                    //description : element.message,
+                                })
+                            });
+                        }
+      
+                        this._showMessageDialog(message_obj.message,message_obj.severity,content)
+
+                    }.bind(this),
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
 
             },
             _closeDialog: function(){

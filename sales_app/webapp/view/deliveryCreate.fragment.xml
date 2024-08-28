@@ -79,6 +79,7 @@
                     id="ShippingPointValue"
                     editable="true"
                     width="150px"
+                    change="onChangeShippingPoint"
                 />
                 <Label
                     id="DeliveryQtyLabel"
@@ -88,6 +89,7 @@
                     id="DeliveryQtyValue"
                     editable="true"
                     width="150px"
+                    change="onChangeQuantity"
                 />
             </f:content>
 
