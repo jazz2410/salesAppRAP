@@ -42,7 +42,6 @@
         >
             <Table
                 id="deliveryTable"
-                selectionChange="onRowSelect"
                 mode="SingleSelectMaster"
             />
         </smartTable:SmartTable>

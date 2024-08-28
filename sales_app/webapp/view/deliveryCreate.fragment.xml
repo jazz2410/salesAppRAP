@@ -1,0 +1,97 @@
+<core:FragmentDefinition
+    id="DeliveryCreateDialog"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        id="deliveryCreateDialog"
+        contentHeight="40%"
+        contentWidth="30%"
+    >
+        <customHeader>
+            <Bar id="Header">
+                <contentLeft>
+                    <Button
+                        id="deliveryCreateClose"
+                        text="Close"
+                        press="closeDeliveryCreate"
+                    />
+                    <Button
+                    id="createDelivery"
+                    text="Create delivery"
+                    press="onPressDeliveryCreate"
+                    />
+                </contentLeft>
+            </Bar>
+        </customHeader>
+
+        <f:SimpleForm
+            id="deliveryCreateForm"
+            editable="true"
+            layout="ColumnLayout"
+        >
+            <f:content>
+                <Toolbar
+                    id="Toolbar1"
+                    ariaLabelledBy="TitleSales"
+                >
+                    <Title
+                        id="TitleSales"
+                        text="Sales data"
+                    />
+                </Toolbar>
+                <Label
+                    id="SalesOrderLabel"
+                    text="Sales order"
+                />
+                <Input
+                    id="SalesOrderValue"
+                    value="{SalesOrder}"
+                    editable="false"
+                    width="150px"
+                />
+                <Label
+                    id="SalesOrderItemLabel"
+                    text="Sales order item"
+                />
+                <Input
+                    id="SalesOrderItemValue"
+                    value="{SalesOrderItem}"
+                    editable="false"
+                    width="150px"
+                />
+
+                <Toolbar
+                    id="Toolbar2"
+                    ariaLabelledBy="TitleDelivery"
+                >
+                    <Title
+                        id="TitleDelivery"
+                        text="Delivery data"
+                    />
+                </Toolbar>
+                <Label
+                    id="ShippingPointLabel"
+                    text="Shipping Point"
+                />
+                <Input
+                    id="ShippingPointValue"
+                    editable="true"
+                    width="150px"
+                />
+                <Label
+                    id="DeliveryQtyLabel"
+                    text="Delivery quantity"
+                />
+                <Input
+                    id="DeliveryQtyValue"
+                    editable="true"
+                    width="150px"
+                />
+            </f:content>
+
+        </f:SimpleForm>
+
+    </Dialog>
+</core:FragmentDefinition>

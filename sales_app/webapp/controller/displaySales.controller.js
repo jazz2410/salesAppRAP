@@ -66,8 +66,6 @@ sap.ui.define([
 
                         var message = oResponse.headers['sap-message'];
                         var message_obj = JSON.parse(message);
-                        console.log(message_obj);
-
                         if(message_obj.details.length != 0){
                             var content = message_obj.details.map(function(element){
                                 return new sap.m.StandardListItem({
@@ -135,10 +133,10 @@ sap.ui.define([
 
                     if(!item){
                         MessageToast.show("Select a sales order item");
+                        return;
                     }
                     var sPath = item.getBindingContext().getPath();
                     var itemsPath = sPath + '/to_Deliveries';
-                    console.log(itemsPath);
                     if(!this._oDialog){
                         this._oDialog = sap.ui.xmlfragment(this.getView().getId(),"salesapp.view.deliveries", this);
                         this.getView().addDependent(this._oDialog);
@@ -148,7 +146,32 @@ sap.ui.define([
                     this._oDialog.open();
             },
             closeDelivery: function(){
+                this._closeDialog();
+            },
+            closeDeliveryCreate: function(){
+                this._closeDialog();
+            },
+            onDeliveryCreate: function(){
+                var item = this.byId('table').getSelectedItems()[0];
+
+                if(!item){
+                    MessageToast.show("Select a sales order item");
+                    return;
+                }
+                var sPath = item.getBindingContext().getPath(); //Get path order sales order items
+
+                if(!this._oDialog){
+                    this._oDialog = sap.ui.xmlfragment(this.getView().getId(),"salesapp.view.deliveryCreate", this);
+                    this.getView().addDependent(this._oDialog);
+                }
+                this.getView().byId('deliveryCreateForm').bindElement(sPath);
+                this._oDialog.open();
+
+            },
+            _closeDialog: function(){
                 this._oDialog.close();
+                this._oDialog.destroy();
+                this._oDialog = undefined;
             }
         });
     });
