@@ -80,7 +80,17 @@
                     editable="true"
                     width="150px"
                     change="onChangeShippingPoint"
-                />
+                    showSuggestion="true"
+                    suggestionItems = "{/ZTD_SHIPPINGPOINT_VH}"
+                    showValueHelp="true"
+                    valueHelpRequest="onShippingPointValueHelp"
+                >
+                <suggestionItems>
+                    <core:Item id="ShippingPointValueHelp" key="{ShippingPoint}" text="{ShippingPoint}"></core:Item>
+                </suggestionItems>
+
+                </Input>
+
                 <Label
                     id="DeliveryQtyLabel"
                     text="Delivery quantity"

@@ -1,9 +1,11 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
+    "sap/m/MessageToast",
+    'sap/ui/model/Filter',
+    'sap/ui/model/FilterOperator',
 ],
-    function (Controller, JSONModel, MessageToast) {
+    function (Controller, JSONModel, MessageToast,Filter,FilterOperator) {
         "use strict";
 
         return Controller.extend("salesapp.controller.displaySales", {
@@ -221,6 +223,34 @@ sap.ui.define([
                         console.log(error);
                     }
                 });
+
+            },
+            onShippingPointValueHelp: function(oEvent){
+                var sInputValue = oEvent.getSource().getValue()
+
+                if(!this._oShippingPointValueHelpDialog){
+                    this._oShippingPointValueHelpDialog = sap.ui.xmlfragment(this.getView().getId(),"salesapp.view.shippingPointValueHelp", this);
+                    this.getView().addDependent(this._oShippingPointValueHelpDialog);
+                }
+    
+                this._oShippingPointValueHelpDialog.getBinding("items").filter([new Filter("ShippingPoint", FilterOperator.Contains, sInputValue)]);
+                this._oShippingPointValueHelpDialog.open();
+            },
+            onValueHelpSearch: function(oEvent){
+                var sValue = oEvent.getParameter("value");
+                var oFilter = new Filter("ShippingPoint", FilterOperator.Contains, sValue);
+                oEvent.getSource().getBinding("items").filter([oFilter]);
+
+            },
+            onValueHelpClose: function(oEvent){
+                var oSelectedItem = oEvent.getParameter("selectedItem");
+                oEvent.getSource().getBinding("items").filter([]);
+    
+                if (!oSelectedItem) {
+                    return;
+                }
+    
+                this.byId("ShippingPointValue").setValue(oSelectedItem.getTitle());
 
             },
             _closeDialog: function(){
