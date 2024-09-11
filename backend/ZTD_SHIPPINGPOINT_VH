@@ -1,0 +1,17 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Value help for shipping point'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZTD_SHIPPINGPOINT_VH
+  as select from I_ShippingPoint
+  association [1] to I_ShippingPointText as _Text on  $projection.ShippingPoint = _Text.ShippingPoint
+                                                  and _Text.Language            = 'E'
+{
+  key ShippingPoint,
+      _Text.ShippingPointName
+}
