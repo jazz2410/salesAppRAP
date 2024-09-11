@@ -1,0 +1,38 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:code="sap.ui.codeeditor"
+>
+    <Dialog
+        id="PayloadDisplayDlg"
+        title="JSON payload"
+        contentHeight="75%"
+        contentWidth="50%"
+    >
+        <customHeader>
+            <Bar id="OrderJSON">
+                <contentLeft>
+                    <Button
+                        id="JSONClose"
+                        text="Close"
+                        press="closePayloadDsp"
+                    />
+                </contentLeft>
+                <contentMiddle>
+                    <Title
+                        id="JSONPayload"
+                        text="Sales order item data"
+                    />
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+        <code:CodeEditor
+            id="JSONCodeEditor"
+            value="{payloadModel>/payload}"
+            type="json"
+            editable="false"
+            maxLines="999999"
+            height="100%"
+        />
+    </Dialog>
+</core:FragmentDefinition>

@@ -57,6 +57,7 @@
               <contentRight>
                 <Button id="showDeliveryButton" text="Show deliveries" press="onDeliveryShow"></Button>
                 <Button id="createDeliveryButton" text="Create delivery" press="onDeliveryCreate"></Button>
+                <Button id="displayJSON" text="JSON" press="onJSON"></Button>
               </contentRight>
             </Bar>
             
