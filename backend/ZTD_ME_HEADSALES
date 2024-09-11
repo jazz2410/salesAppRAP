@@ -1,0 +1,85 @@
+@Metadata.layer: #CORE
+
+@UI: {
+    headerInfo: {
+        typeName: 'Sale',
+        typeNamePlural: 'Sales',
+        title: { type: #STANDARD, value: 'SalesOrder'},
+        description: { value: 'SalesDocumentTypeName' }
+    }}
+
+
+@Search.searchable: true
+annotate entity ZTD_HEADSALES with
+{
+
+  @UI.facet: [
+      {
+      id: 'NetAmount',
+      purpose: #HEADER,
+      type: #DATAPOINT_REFERENCE,
+      position: 10,
+      targetQualifier: 'NetAmount'
+      },
+      {
+      id: 'Soldto',
+      purpose: #HEADER,
+      type: #DATAPOINT_REFERENCE,
+      position: 20,
+      targetQualifier: 'Soldto'
+      },
+      {
+      label: 'General information',
+      id: 'GeneralInfo',
+      type: #COLLECTION,
+      position: 10
+      },
+      {
+      label: 'General',
+      id: 'SalesGeneral',
+      type: #IDENTIFICATION_REFERENCE,
+      purpose: #STANDARD,
+      parentId: 'GeneralInfo',
+      position: 10
+      },
+      {
+      id: 'SalesItems',
+      purpose: #STANDARD,
+      type: #LINEITEM_REFERENCE,
+      label: 'Sales items',
+      position: 20,
+      targetElement: '_SalesItems'
+      }
+  ]
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.selectionField: [{ position: 10 }]
+  SalesOrder;
+  @UI.lineItem: [{ position: 20 }]
+  @UI.selectionField: [{ position: 20 }]
+  @Search.defaultSearchElement: true
+  @Consumption.valueHelpDefinition: [{ entity: { name : 'ZTD_ORDERTYPE_VH',element: 'SalesOrderType' } }]
+  SalesOrderType;
+  @UI.lineItem: [{ position: 30, label: 'Status', criticality: 'Criticality' }]
+  @UI.identification: [{ position: 50, label: 'Delivery status', criticality: 'Criticality' }]
+  DeliveryStatusDescription;
+
+
+  @UI.dataPoint: { qualifier: 'NetAmount', title: 'Net amount' }
+  TotalNetAmount;
+  @UI.dataPoint: { qualifier: 'Soldto', title: 'Customer' }
+  @UI.identification: [{ position: 10 }]
+  SoldToParty;
+  @UI.identification: [{ position: 20 }]
+  SalesDocumentTypeName;
+  @UI.identification: [{ position: 30 }]
+  SalesOffice;
+  @UI.identification: [{ position: 40 }]
+  PurchaseOrderByCustomer;
+
+
+
+
+
+
+}
