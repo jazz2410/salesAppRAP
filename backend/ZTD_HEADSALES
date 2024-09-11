@@ -1,0 +1,35 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Sales header'
+@Metadata.allowExtensions: true
+define root view entity ZTD_HEADSALES
+  as select from R_SalesOrderTP as _SalesHeader
+  association     to I_SalesDocumentTypeText as _Text               on  _SalesHeader.SalesOrderType = _Text.SalesDocumentType
+                                                                    and _Text.Language              = 'E'
+  association [1] to I_DeliveryStatusText    as _DeliveryStatusText on  $projection.deliveryStatus   = _DeliveryStatusText.DeliveryStatus
+                                                                    and _DeliveryStatusText.Language = 'E'
+  composition[0..*] of ZTD_ITEMSSALES as _SalesItems
+  //composition of target_data_source_name as _association_name
+{
+
+  key SalesOrder,
+      SalesOrderType,
+      _Text.SalesDocumentTypeName,
+      SoldToParty,
+      SalesOffice,
+      TotalNetAmount,
+      TransactionCurrency,
+      PurchaseOrderByCustomer,
+      OverallDeliveryStatus as deliveryStatus,
+      case OverallDeliveryStatus
+        when ' ' then 0
+        when 'A' then 1
+        when 'B' then 2
+        when 'C' then 3
+      end                   as Criticality,
+      _DeliveryStatusText.DeliveryStatusDescription,
+      _Text,
+      _SalesItems
+
+
+      //    _association_name // Make association public
+}
