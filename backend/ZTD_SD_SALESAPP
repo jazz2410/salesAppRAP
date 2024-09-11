@@ -1,0 +1,7 @@
+@EndUserText.label: 'Service definition'
+define service ZTD_SD_SALESAPP {
+  expose ZTD_HEADSALES;
+  expose ZTD_ITEMSSALES;
+  expose ZTD_DELIVERIES;
+  expose ZTD_SHIPPINGPOINT_VH;
+}
