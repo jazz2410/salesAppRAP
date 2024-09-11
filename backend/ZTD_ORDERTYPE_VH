@@ -1,0 +1,18 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Value help for order types'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZTD_ORDERTYPE_VH
+  as select from I_SalesOrderType as _SalesOrderType
+  association to I_SalesDocumentTypeText as _Text on  _SalesOrderType.SalesOrderType = _Text.SalesDocumentType
+                                                  and _Text.Language            = 'E'
+
+{
+  key SalesOrderType as SalesOrderType,
+      _Text.SalesDocumentTypeName
+}
