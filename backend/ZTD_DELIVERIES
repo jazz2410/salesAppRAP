@@ -1,0 +1,27 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Delivery items'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZTD_DELIVERIES
+  as select from I_DeliveryDocumentItem as _Deliveries
+  association [1] to I_DeliveryDocument    as _Delivery   on  _Delivery.DeliveryDocument = $projection.DeliveryDocument
+  association     to parent ZTD_ITEMSSALES as _SalesItems on  _SalesItems.SalesOrder     = $projection.ReferenceSDDocument
+                                                          and _SalesItems.SalesOrderItem = $projection.ReferenceSDDocumentItem
+{
+  key DeliveryDocument,
+  key DeliveryDocumentItem,
+      DeliveryDocumentItemText,
+      Product,
+      @Semantics.quantity.unitOfMeasure: 'BaseUnit'
+      ActualDeliveryQuantity,
+      BaseUnit,
+      ReferenceSDDocument,
+      ReferenceSDDocumentItem,
+      _Delivery.ShippingPoint,
+      _SalesItems
+}
