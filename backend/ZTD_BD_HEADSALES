@@ -1,0 +1,40 @@
+unmanaged implementation in class zbp_td_headsales unique;
+//strict ( 2 );
+
+define behavior for ZTD_HEADSALES
+//late numbering
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  update;
+  field ( readonly : update ) SoldToParty, SalesOffice, SalesDocumentTypeName, DeliveryStatusDescription;
+  association _SalesItems;
+}
+
+define behavior for ZTD_ITEMSSALES alias ztd_items
+
+lock dependent by _SalesHeader
+authorization dependent by _SalesHeader
+
+{
+  update;
+  field ( readonly : update ) SalesOrder, SalesOrderItem, SalesOrderItemCategory, Product, DeliveryStatusDescription,
+  DeliveryStatus, BusinessArea, ControllingArea, RequestedQuantity, RequestedQuantityUnit, SalesDocumentItemCategoryName;
+  association _SalesHeader;
+  association _Deliveries;
+
+  action getOrderJSON result[1] ZTD_S_ORDERJSON;
+
+}
+
+define behavior for ZTD_DELIVERIES
+//lock dependent by _SalesItems
+//authorization dependent by _SalesItems
+
+{
+  create;
+  field ( readonly : update ) REFERENCESDDOCUMENT, REFERENCESDDOCUMENTITEM;
+
+  association _SalesItems;
+}
