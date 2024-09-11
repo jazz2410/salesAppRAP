@@ -1,0 +1,205 @@
+CLASS lhc_ztd_deliveries DEFINITION INHERITING FROM cl_abap_behavior_handler.
+
+  PRIVATE SECTION.
+
+    METHODS create FOR MODIFY
+      IMPORTING entities FOR CREATE ztd_deliveries.
+
+    METHODS read FOR READ
+      IMPORTING keys FOR READ ztd_deliveries RESULT result.
+
+    METHODS rba_Salesitems FOR READ
+      IMPORTING keys_rba FOR READ ztd_deliveries\_Salesitems FULL result_requested RESULT result LINK association_links.
+
+ENDCLASS.
+
+CLASS lhc_ztd_deliveries IMPLEMENTATION.
+
+  METHOD create.
+
+    LOOP AT entities ASSIGNING FIELD-SYMBOL(<fs_entity>).
+
+      APPEND VALUE #( %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                              text = 'Delivery creation now allowed' )  )
+                                                              TO reported-ztd_deliveries.
+
+    ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD read.
+  ENDMETHOD.
+
+  METHOD rba_Salesitems.
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lhc_ZTD_HEADSALES DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR ztd_headsales RESULT result.
+
+    METHODS update FOR MODIFY
+      IMPORTING entities FOR UPDATE ztd_headsales.
+
+    METHODS read FOR READ
+      IMPORTING keys FOR READ ztd_headsales RESULT result.
+
+    METHODS lock FOR LOCK
+      IMPORTING keys FOR LOCK ztd_headsales.
+
+    METHODS rba_Salesitems FOR READ
+      IMPORTING keys_rba FOR READ ztd_headsales\_Salesitems FULL result_requested RESULT result LINK association_links.
+
+ENDCLASS.
+
+CLASS lhc_ZTD_HEADSALES IMPLEMENTATION.
+
+  METHOD get_instance_authorizations.
+  ENDMETHOD.
+
+  METHOD update.
+
+    DATA: lt_salesheader TYPE TABLE FOR UPDATE i_salesordertp,
+          ls_salesheader TYPE i_salesordertp.
+
+
+    LOOP AT entities ASSIGNING FIELD-SYMBOL(<fs_entity>).
+
+      IF <fs_entity>-PurchaseOrderByCustomer EQ 'XXX'.
+
+        APPEND VALUE #( SalesOrder = <fs_entity>-SalesOrder %msg = new_message_with_text(
+                                                            severity = if_abap_behv_message=>severity-error
+                                                            text = 'XXX is not allowed' ) ) TO reported-ztd_headsales.
+
+        RETURN.
+      ENDIF.
+
+      lt_salesheader = VALUE #( BASE lt_salesheader ( SalesOrder = <fs_entity>-SalesOrder PurchaseOrderByCustomer = <fs_entity>-PurchaseOrderByCustomer )  ).
+    ENDLOOP.
+
+    MODIFY ENTITIES OF i_salesordertp
+            ENTITY SalesOrder
+            UPDATE FIELDS ( PurchaseOrderByCustomer )
+            WITH lt_salesheader
+            MAPPED DATA(ls_mapped)
+            FAILED DATA(ls_failed)
+            REPORTED DATA(ls_reported).
+
+  ENDMETHOD.
+
+  METHOD read.
+  ENDMETHOD.
+
+  METHOD lock.
+  ENDMETHOD.
+
+  METHOD rba_Salesitems.
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lhc_ztd_items DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    METHODS update FOR MODIFY
+      IMPORTING entities FOR UPDATE ztd_items.
+
+    METHODS read FOR READ
+      IMPORTING keys FOR READ ztd_items RESULT result.
+
+    METHODS rba_Salesheader FOR READ
+      IMPORTING keys_rba FOR READ ztd_items\_Salesheader FULL result_requested RESULT result LINK association_links.
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR ztd_items RESULT result.
+
+    METHODS rba_Deliveries FOR READ
+      IMPORTING keys_rba FOR READ ztd_items\_Deliveries FULL result_requested RESULT result LINK association_links.
+
+    METHODS getOrderJSON FOR MODIFY
+      IMPORTING keys FOR ACTION ztd_items~getOrderJSON RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_ztd_items IMPLEMENTATION.
+
+  METHOD update.
+  ENDMETHOD.
+
+  METHOD read.
+  ENDMETHOD.
+
+  METHOD rba_Salesheader.
+  ENDMETHOD.
+
+  METHOD get_instance_authorizations.
+  ENDMETHOD.
+
+  METHOD rba_Deliveries.
+  ENDMETHOD.
+
+  METHOD getOrderJSON.
+
+    DATA: lt_order_items TYPE STANDARD TABLE OF bapisditbos,
+          lt_return      TYPE tt_bapiret2.
+
+    CALL FUNCTION 'BS01_SALESORDER_GETDETAIL'
+      EXPORTING
+        salesdocument = keys[ 1 ]-SalesOrder
+      TABLES
+        order_items   = lt_order_items
+        return        = lt_return.
+
+    DATA(order_items_json_string) = /ui2/cl_json=>serialize( data          = lt_order_items
+                                                             pretty_name   = /ui2/cl_json=>pretty_mode-camel_case
+                                                             ts_as_iso8601 = abap_true ).
+
+    DATA(ls_result) = VALUE ztd_s_orderjson( order_id = keys[ 1 ]-SalesOrder order_item = keys[ 1 ]-SalesOrderItem json_string = order_items_json_string ).
+    APPEND VALUE #(  salesorder = keys[ 1 ]-SalesOrder salesorderitem = keys[ 1 ]-SalesOrderItem %param = ls_result  ) TO result.
+
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lsc_ZTD_HEADSALES DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+
+    METHODS finalize REDEFINITION.
+
+    METHODS check_before_save REDEFINITION.
+
+    METHODS save REDEFINITION.
+
+    METHODS cleanup REDEFINITION.
+
+    METHODS cleanup_finalize REDEFINITION.
+
+ENDCLASS.
+
+CLASS lsc_ZTD_HEADSALES IMPLEMENTATION.
+
+  METHOD finalize.
+
+
+
+
+
+  ENDMETHOD.
+
+  METHOD check_before_save.
+  ENDMETHOD.
+
+  METHOD save.
+
+
+  ENDMETHOD.
+
+  METHOD cleanup.
+  ENDMETHOD.
+
+  METHOD cleanup_finalize.
+  ENDMETHOD.
+
+ENDCLASS.
