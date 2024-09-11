@@ -1,0 +1,59 @@
+@Metadata.layer: #CORE
+
+@UI: {
+    headerInfo: {
+        typeName: 'Sales Item',
+        typeNamePlural: 'Sales Items',
+        title: { type: #STANDARD, value: 'SalesOrderItem'}
+    }}
+
+
+annotate entity ZTD_ITEMSSALES with
+{
+
+
+  @UI.facet: [
+      {
+      id: 'OrderItemText',
+      purpose: #HEADER,
+      type: #DATAPOINT_REFERENCE,
+      position: 10,
+      targetQualifier: 'OrderItemText'
+      },
+            {
+      label: 'Sales order item details',
+      id: 'GeneralInfo',
+      type: #COLLECTION,
+      position: 10
+      },
+      {
+      label: 'General',
+      id: 'SalesItemDetails',
+      type: #IDENTIFICATION_REFERENCE,
+      purpose: #STANDARD,
+      parentId: 'GeneralInfo',
+      position: 10
+      }
+  ]
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.dataPoint: { qualifier: 'OrderItemText', title: 'Order item' }
+  SalesOrderItem;
+  @UI.lineItem: [{ position: 20 }]
+  SalesDocumentItemCategoryName;
+  @UI.lineItem: [{ position: 30 }]
+  @UI.identification: [{ position: 50 }]
+  RequestedQuantity;
+  @UI.lineItem: [{ position: 40,label: 'Status', criticality: 'Criticality' }]
+  @UI.identification: [{ position: 60, label: 'Delivery status', criticality: 'Criticality' }]
+  DeliveryStatusDescription;
+  @UI.identification: [{ position: 10 }]
+  Product;
+  @UI.identification: [{ position: 20 }]
+  SalesOrderItemCategory;
+  @UI.identification: [{ position: 30 }]
+  ControllingArea;
+  @UI.identification: [{ position: 40 }]
+  BusinessArea;
+
+}
