@@ -1,0 +1,45 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Sales items'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+@Metadata.allowExtensions: true
+
+define view entity ZTD_ITEMSSALES
+  as select from R_SalesOrderItemTP
+  association [1..1] to I_SalesDocumentItemCategoryT as _DocumentItemCategoryText on  $projection.SalesOrderItemCategory = _DocumentItemCategoryText.SalesDocumentItemCategory
+                                                                                  and _DocumentItemCategoryText.Language = 'E'
+  association [1]    to I_DeliveryStatusText         as _DeliveryStatusText       on  $projection.DeliveryStatus   = _DeliveryStatusText.DeliveryStatus
+                                                                                  and _DeliveryStatusText.Language = 'E'
+  association        to parent ZTD_HEADSALES         as _SalesHeader              on  $projection.SalesOrder = _SalesHeader.SalesOrder
+  composition [0..*] of ZTD_DELIVERIES               as _Deliveries
+
+
+{
+  key SalesOrder,
+  key SalesOrderItem,
+      SalesOrderItemCategory,
+      _DocumentItemCategoryText.SalesDocumentItemCategoryName,
+      SalesOrderItemText,
+      Product,
+      @Semantics.quantity.unitOfMeasure: 'RequestedQuantityUnit'
+      @Semantics.valueRange.minimum: '0'
+      RequestedQuantity,
+      RequestedQuantityUnit,
+      ControllingArea,
+      BusinessArea,
+      DeliveryStatus,
+      case DeliveryStatus
+      when ' ' then 0
+      when 'A' then 1
+      when 'B' then 2
+      when 'C' then 3
+      end as Criticality,
+      _DeliveryStatusText.DeliveryStatusDescription,
+      _SalesHeader,
+      _Deliveries
+}
